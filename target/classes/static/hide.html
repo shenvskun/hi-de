@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <meta charset="utf-8">
+        <title>hi-de-0.0-SNAPSHOT</title>
+        <style>
+            p,h1,h2,h3,h4,h5,h6,ul,ol,dl,dd{
+                margin:0px;
+                padding:0px;
+            }
+
+            /* 清除标签默认条目符号*/
+            ul,ol{
+                list-style:none;
+            }
+
+            /* 将h标签的文字大小设置为默认大小*/
+            h1,h2,h3,h4,h5,h6{
+                font-size:100%;
+                /* 根据实际需求来加   */
+                font-weight:normal;
+            }
+
+            body,html{
+                margin:0px;
+                padding: 0px;
+                height: 100%;
+            }
+            /*body自适应屏幕高度
+            */
+            body{
+/*                margin: 20px;*/
+                max-width: 1920px;
+                min-width: 1300px;
+                min-height: 700px;
+/*                background-image: url(../%E8%B5%B7%E4%BC%8F%E8%83%8C%E6%99%AF.jpg);*/
+                border: 1px solid transparent;
+                
+            }
+            /*body的margin-top设置无效的原因：
+            边缘坍塌  margin collapse
+            body自己设置类0的margin-top 但在谷歌的elements里看到的它距离视口上边沿有16px的距离(没有显示)
+            是因为body和第一个块子元素note_head的上边缘坍塌到一起 组成一个上边沿 高度为最长的那个即16px
+            */
+           #note_head{
+                margin: 0.4em auto 0px;
+                width: 80%;
+/*                height: 120px; 该块元素的高度由垂直方向的 margin padding border content*/
+                background: black;
+                padding-top: 0.3em;
+                padding-left: 5%;
+                padding-bottom: 0.3em;
+                
+                font: 900 40px/50px arial,sans-serif;
+                color: aliceblue;
+                border: 4px solid #c3c3c3;
+                border-radius: 20px;
+            }
+            #hidelogo{
+                background-image: url(../%E6%9C%A8%E5%A4%B4%E7%AB%96%E7%BA%B9%E7%90%86.jpg);
+                -webkit-background-clip: text; /*裁剪边缘border-box padding-box content-box text*/
+                color: transparent;
+            }
+            #note_body{
+                height: 80%;
+                width: 95%;
+                margin: 0.4em auto auto;
+            }
+            #body_schedule{
+                float: left;
+                width: 10%;
+                border: 2px solid #a2a2a2;
+                border-radius: 10px;
+                height: 50%;
+                margin-right: 0.2em;
+            }
+            #body_content{
+                width: 800px;
+                height: 100%;
+                min-height: 600px;
+                border: 4px solid black;
+                border-radius: 5px;
+                margin: 0 auto auto;
+                box-sizing:border-box; /*★ 盒子模型的种类 转换成border-box padding就不会撑大盒子了*/
+                padding: 10px;
+/*                overflow-y: scroll;*/
+            }
+            
+            /*行内元素设置margin border padding 能影响自己和周围的行内元素 对块元素没有影响*/
+            .span1{
+                color: darkslateblue;
+                border: 1px solid #c3c3c3;
+                border-radius: 2px;
+            }
+            .span1:hover{
+                background-color: aquamarine;
+            }
+            #body_vocabulary{
+                float: right;
+                width: 10%;
+                border: 2px solid #a2a2a2;
+                border-radius: 10px;
+                font: bold 20px/22px arial,sans-serif; 
+                overflow: hidden;
+            }
+            
+            textarea{
+                width: 100%;
+                height: 100%;
+            }
+            
+            /*用于充当注释线的div样式*/
+            .wireClass{
+                position: absolute;
+                border-top: 1px solid #a1a1a1;
+            }
+            /*注释框*/
+            .annoClass{
+                position: absolute;
+/*                right: 100px;*/
+                border: 1px solid #a1a1a1;
+                border-radius: 2px;
+                min-width: 20px;
+                max-width: 100px;
+                min-height: 20px;
+                font: 10px/20px arial,sans-serif;
+                color: forestgreen;
+            }
+            /*z-index设置比body-content的小 防止点击textarea时点到画布 textarea没有 反应*/
+            #canvas{
+                position: absolute;
+                z-index: -1;
+            }
+        </style>
+        <script src="sk.js"></script>
+        <script></script>
+    </head>
+    <body onload="init()" id="bodyId">
+        <canvas id="canvas" width="600" height="300">不支持背景</canvas>
+        <div id="note_head">
+            <span id="hidelogo">Hi-de &nbsp;<small><small>learn note</small></small></span>
+        </div>
+        <div id="note_body">
+            <div id="body_schedule">
+                schedule
+            </div>
+            <div id="body_vocabulary">
+                    vocabulary
+            </div>
+            <div id="body_content">
+                <textarea id="textareaId" placeholder="paste here"></textarea>
+            </div>
+        </div>
+        
+        <div id="note_foot">
+        </div>
+        <script>
+            var oNewSpans = new Array();
+            var oWireDivs = new Array();
+            var annoDivs = new Array();
+            
+            var oTextarea = document.getElementById("textareaId");
+            oTextarea.onchange = function manipulateText(){
+                var pt = oTextarea.value;
+                pt = pt.replace(/ +/g,' '); //和/\s/g一个效果
+                var noteContent = document.getElementById("body_content");
+                noteContent.innerHTML=pt;
+               
+                noteContent.onmouseup = function(e) {
+                     var oContentCoordinate = noteContent.getBoundingClientRect();
+                    var iContentLeft = oContentCoordinate.left;
+                    var iContentRight = oContentCoordinate.right;
+                    var annoRight = iContentRight+10;
+                    
+                    var selecter = window.getSelection();
+                    var sSelectedTXT = selecter.toString();
+//                    selecter.removeAllRanges();//变成未选中的状态 不是删除选中的文本
+//                    var oDocumentFragment = range.extractContents(); //产生包含选中文本的DocumentFragment对象
+                    var range = selecter.getRangeAt(0);
+                    range.deleteContents(); //删除选中的文本
+//                    var nNewNode = new Text("测试");//创建一个文本节点 Text继承自Node接口
+                    var nNewNode = document.createElement("SPAN");
+                    nNewNode.setAttribute("class","span1");
+                    nNewNode.innerHTML=sSelectedTXT;
+                    range.insertNode(nNewNode);
+                    
+                    //为新增的span添加注释线 
+                    //注释线是由一个位置为absolute的div
+                    //1得到span的右上角的坐标
+                    var oCoordinate = nNewNode.getBoundingClientRect();
+                    var iSpanX = oCoordinate.right;
+                    var iSpanY = oCoordinate.top;
+                    //往左边画
+                    var iWireLenght = Math.abs(iContentRight-iSpanX)+10;
+                    
+                    var oWireDiv = document.createElement("DIV");
+                    oWireDiv.setAttribute("class","wireClass");
+                    oWireDiv.style.left=iSpanX+'px';
+                    oWireDiv.style.top=iSpanY+'px';
+                    oWireDiv.style.width=iWireLenght+'px';
+                    
+                    //注释框
+                    var annoDiv = document.createElement("DIV");
+                    annoDiv.setAttribute("class","annoClass");
+                    annoDiv.setAttribute("contenteditable","true");
+                    annoDiv.style.left=annoRight+'px';
+                    annoDiv.style.top=(iSpanY-4)+'px';
+                    
+                    oWireDivs.push(oWireDiv);
+                    oNewSpans.push(nNewNode);
+                    annoDivs.push(annoDiv);
+                    
+                    document.body.append(annoDiv);
+                    document.body.append(oWireDiv);
+                }
+                
+                
+            }
+            
+            document.body.onresize = function(e){
+                var noteContent = document.getElementById("body_content");
+                var oContentCoordinate = noteContent.getBoundingClientRect();
+                var nContentLeft = oContentCoordinate.left;
+                var nContentRight = oContentCoordinate.right;
+                //                    alert(nContentLeft);
+                for(var si = 0; si<oNewSpans.length; si++){
+                    var annoSpan = oNewSpans[si];
+                    var newCoordinate = annoSpan.getBoundingClientRect();
+                    var newRight = newCoordinate.right;
+                    var newTop = newCoordinate.top;
+
+                    //注释线
+                    var wireDiv = oWireDivs[si];
+                    wireDiv.style.left=newRight+'px';
+                    wireDiv.style.top=newTop+'px';
+                    wireDiv.style.width=Math.abs(nContentRight-newRight)+10+'px';
+                //                        alert(wireDiv.style.left);
+
+                    //注释框
+                    var annoDiv = annoDivs[si];
+                    annoDiv.style.left=(nContentRight+10)+'px';
+                    annoDiv.style.top=(newTop-4)+'px';
+                }
+            }
+            
+            //缓存是一个字符串
+            var cacheAnnoStr = new String();
+            var cacheContentStr = new String();
+            
+            //最终形式  每隔5秒校验annoDiv的个数 个数一样就校验annoDiv的内容 发现和本地数据 不一样就 发服务器  需要本地生成文件
+            //将数据保存到一个对象中 保存前校验数据是否一致 不一致更新对象数据的同时 将数据发送服务器
+            function saveCache(){
+                var noteContent = document.getElementById("body_content").innerHTML;
+                var annoDivs = document.querySelectorAll(".annoClass");
+                
+                //封装数据 [{index: i, note : '内容'},{...}...] anno内容的格式随着服务端anno类变化
+                var sNoteData = '[';
+                for(var i=0; i<annoDivs.length; i++){
+                    var anno = annoDivs[i];
+                    
+                    //过滤替换笔记内容
+                    var note = anno.innerHTML;
+                    note = note.replace(/&nbsp;/g,' '); 
+                    
+                    sNoteData+='{index:'+i+',note:"'+ note +'"}';
+                    if(i<(annoDivs.length-1)){
+                        sNoteData+=',';
+                    }
+                }
+                sNoteData+=']';
+                
+                //对数据进行编码
+                noteContent = encodeURIComponent(noteContent);
+//                sNoteData = encodeURIComponent(sNoteData);
+                
+                //与缓存数据对比 相同则不发服务器
+                if(sNoteData == cacheAnnoStr && noteContent==cacheContentStr) {
+                    return;
+                }
+                
+                //数据复制进缓存
+                cacheAnnoStr = sNoteData;
+                cacheContentStr = noteContent;
+                
+                var note = '{content:'+noteContent+'}';
+                var data = '{annos:'+sNoteData+',note:'+note+'}';
+                
+                //异步到服务器
+                myAjax.post('/hi-de/note/save', data);
+            }
+            
+            //设置监听太麻烦 10秒同步一次
+            window.setInterval(saveCache, 10000);
+        </script>
+    </body>
+</html>
+
+
+
+
+
