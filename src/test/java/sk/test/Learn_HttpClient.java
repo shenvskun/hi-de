@@ -5,9 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.security.KeyManagementException;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -24,6 +22,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -37,8 +36,6 @@ import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContexts;
-import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -164,7 +161,7 @@ public class Learn_HttpClient {
 		CloseableHttpClient httpClient = HttpClients.custom().setConnectionManager(pcm).setDefaultRequestConfig(requestCfg).build();
 		
 //		HttpPost post = new HttpPost("https://localhost:8443/hi-de/server");
-		HttpPost post = new HttpPost("http://localhost:8080/hi-de/server");
+		HttpPost post = new HttpPost("https://paymentnotify.1hai.cn/Payment/LianJin/Notify4LianJin.aspx");
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		nvps.add(new BasicNameValuePair("kkk", "这是名"));
 		nvps.add(new BasicNameValuePair("ssss", "这是xin"));
@@ -180,7 +177,8 @@ public class Learn_HttpClient {
 		post.setEntity(uefe);
 		
 		try {
-			httpClient.execute(post);
+			CloseableHttpResponse res = httpClient.execute(post);
+			System.out.println(res.getStatusLine().getStatusCode());
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -216,15 +214,41 @@ public class Learn_HttpClient {
 		} catch (KeyManagementException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}  
-         SSLConnectionSocketFactory ssf = new SSLConnectionSocketFactory(  
+		}
+         
+        SSLConnectionSocketFactory ssf = new SSLConnectionSocketFactory(  
                  ctx, NoopHostnameVerifier.INSTANCE);  
          CloseableHttpClient httpclient = HttpClients.custom()  
                  .setSSLSocketFactory(ssf).build();  
          
          HttpPost httpPost = new HttpPost("https://localhost:8443/hi-de/server");
+//         HttpPost httpPost = new HttpPost("https://paymentnotify.1hai.cn/PaymentError.aspx?aspxerrorpath=/Payment/LianJin/Notify4LianJin.aspx");
+//         HttpPost httpPost = new HttpPost("https://paymentnotify.1hai.cn/Payment/LianJin/Notify4LianJin.aspx");
+         
+         ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+
+ 			@Override
+ 			public String handleResponse(final HttpResponse response) throws ClientProtocolException, IOException {
+ 				int status = response.getStatusLine().getStatusCode();
+ 				if (status >= 200 && status < 300) {
+ 					HttpEntity entity = response.getEntity();
+ 					return entity != null ? EntityUtils.toString(entity) : null;
+ 				} else {
+ 					// 处理异常信息
+ 					System.err.println("httpstatus:" + status);
+ 					HttpEntity entity = response.getEntity();
+ 					String resultString = "";
+ 					if (entity != null) {
+ 						resultString = EntityUtils.toString(entity);
+ 					}
+ 					return resultString;
+ 				}
+ 			}
+
+ 		};
          try {
-			CloseableHttpResponse response = httpclient.execute(httpPost);
+			String res = httpclient.execute(httpPost, responseHandler);
+			System.out.println(res);
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
