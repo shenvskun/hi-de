@@ -5,7 +5,7 @@ import org.apache.http.client.protocol.HttpClientContext;
 public class Learn_Thread {
 	public static void main(String[] args) {
 		//join
-		joinTest();
+//		joinTest();
 		
 		//同一把锁
 		lockTest();

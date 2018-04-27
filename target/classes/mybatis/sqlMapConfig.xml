@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+ <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">    
+ <configuration>  
+    
+     <!-- 注册xml文件 -->  
+     <!-- 
+     <mappers>   -->
+         <!-- 注册UserMainMapper.xml文件，UserMainMapper.xml位于com.lanhuigu.mybatis.map这个包下，    
+             所以resource写成com/lanhuigu/mybatis/map/UserMainMapper.xml-->  
+         <!-- <mapper resource="com/lanhuigu/mybatis/map/UserMainMapper.xml"/> -->  
+         <!-- 将map下的*.java和*.xml都注册到SqlSession实例中 -->  
+        <!--  <package name="com.lanhuigu.mybatis.map"/>  -->
+     <!--   <mapper resource="com/sk/hide/dao/UserMapper.xml"/>
+     </mappers>   --> 
+     
+     <typeAliases>  
+        <package name="com.sk.hide.dao"/>  
+    </typeAliases>  
+ </configuration>  

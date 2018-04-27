@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -25,9 +27,10 @@ import com.ibatis.sqlmap.client.SqlMapClient;
  * 2 如果使用applicationContext.xml中的<context:component-scan base-package="com.lianjinsoft" /> 寻找配置类 则需要@Configuration注解单纯的@Component不行 因为@Bean必须和@Configuration配合
  */
 @Configuration
-@EnableTransactionManagement 
+@EnableTransactionManagement //开启事务管理 NO.1
 @PropertySource("classpath:/resource/mydatasource.properties")
 @ComponentScan(basePackages={"sk.com.util"})
+@MapperScan(basePackages = {"com.sk.hide.dao"})
 public class RootConfig {
 	public static Logger logger = Logger.getLogger(RootConfig.class);
 	/*
@@ -86,6 +89,24 @@ public class RootConfig {
 	
 	@Value("${jdbc.filters}")
     private String filters;  
+	
+	/**
+	 * <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:/properties/config-test.properties</value>
+		</property>
+	</bean>
+	 * @return
+	 */
+//	@Bean
+//	public PropertyPlaceholderConfigurer propertyPlaceholderConfigurer() {
+//		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
+//		ppc.setLocation(new ClassPathResource("/resource/mydatasource.properties"));
+//		return ppc;
+//	}
+	
+	
+	
 	@Bean    
 	@Primary  //在同样的DataSource中，首先使用被标注的DataSource  
 	public DataSource dataSource(){  
@@ -124,7 +145,7 @@ public class RootConfig {
 		return datasource;  
 	}  
 	
-	@Bean
+	@Bean //开启事务管理 NO.2
 	public PlatformTransactionManager dataSourceTransactionManager() {
 		
 		return new DataSourceTransactionManager(dataSource());
@@ -143,6 +164,37 @@ public class RootConfig {
 		SqlMapClient sqlMapClient = sqlMap.getObject();
 		return sqlMapClient;
 	}
+	
+	@Bean
+	public SqlSessionFactoryBean sqlSessionFactoryBean() {
+		String resource = "classpath:/mybatis/sqlMapConfig.xml";
+		SqlSessionFactoryBean ssfb = new SqlSessionFactoryBean();
+		ssfb.setDataSource(dataSource());
+		ssfb.setConfigLocation(new ClassPathResource("/mybatis/sqlMapConfig.xml"));
+		return ssfb;
+	}
+	
+	//----★★★★★★★★★★----以下代码在JavaConfig之下必须用@MapperScan方式替换
+	/**
+	 *  <!-- mybatis的Mapper的扫描器 MapperScannerConfigure  会自动扫描  
+         mapper包下的所有接口自动生成代理对象: 对象名字为Mapper接口类名(首字母小写)  
+     -->  
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+        <property name="basePackage" value="com.steadyjack.mapper"></property>  
+          
+        <!-- 注意这里是SqlSessionFactoryBeanName -->  
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>  
+    </bean>  
+	 */
+//	@Bean
+//	@DependsOn("propertiesFactoryBean")
+//	public MapperScannerConfigurer mapperScannerConfigurer() {
+//		MapperScannerConfigurer mc = new MapperScannerConfigurer();
+//		mc.setBasePackage("com.sk.hide.dao");
+//		mc.setSqlSessionFactoryBeanName("sqlSessionFactory");
+//		return mc;
+//	}
+	
 }
 
 

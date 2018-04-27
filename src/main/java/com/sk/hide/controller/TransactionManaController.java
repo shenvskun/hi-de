@@ -21,7 +21,7 @@ public class TransactionManaController {
 	private static Logger logger = Logger.getLogger(TransactionManaController.class); 
 	
 	@GetMapping("/transac")
-	@Transactional
+	@Transactional //开启事务管理 NO.3
 	public Map testTransac(HttpServletRequest res) {
 		String id = res.getParameter("id");
 		
@@ -70,7 +70,7 @@ public class TransactionManaController {
 		paramM.put("id", id);
 		Map m2 = null;
 		try {
-			Map m1 = (Map)sql.queryForObject("user.query", paramM);
+			Map m1 = (Map)sql.queryForObject("user.query", paramM);  //开启事务管理 NO.4
 			System.out.println(m1.get("name"));
 			
 			Thread.sleep(10000);
