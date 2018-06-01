@@ -50,8 +50,8 @@ public class Learn_HttpClient {
 		
 //		socket();
 		
-		sslSocketFactory();
-//		sslWithoutValidation();
+//		sslSocketFactory();
+		sslWithoutValidation();
 	}
 	//★概念
 	//路由：需要连接的主机的个数

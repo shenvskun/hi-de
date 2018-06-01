@@ -19,17 +19,17 @@ import com.sk.hide.util.ApplicationContextUtil;
 //@ContextConfiguration(classes = MyWebAppInitializer.class) 
 public class Learn_Mybatis {
 
-//		@Test
-//		public void test() {
-//			AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-//			ctx.register(RootConfig.class);
-//			ctx.refresh();
-//			UserMapper um = (UserMapper)ctx.getBean("userMapper");
-//			User user = new User();
-//			user.setId(4);
-//			user = um.find(user);
-//			System.out.println(user.getName());
-//			
-//		}
+		@Test
+		public void test() {
+			AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+			ctx.register(RootConfig.class);
+			ctx.refresh();
+			UserMapper um = (UserMapper)ctx.getBean("userMapper");
+			User user = new User();
+			user.setId(4);
+			user.setName("");
+			user = um.find(user);
+			System.out.println(user.getName());
+		}
 
 	}
