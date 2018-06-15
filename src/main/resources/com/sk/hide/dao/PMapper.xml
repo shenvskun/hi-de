@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.sk.hide.dao.PMapper">  
+  	 <select id="find" parameterType="com.sk.hide.entity.P" resultType="com.sk.hide.entity.P">  
+   		select * from p where uid = #{uid}  
+  	 </select>  
+  	 <insert id="add" parameterType="com.sk.hide.entity.P">  
+   		insert into p(uid,value,type,sevenDate,beginDate) values(#{uid}, #{value}, #{type},#{sevenDate},#{beginDate})  
+  	 </insert>  
+  	 <update id="update" parameterType="com.sk.hide.entity.P">  
+   		update p set 
+   		<if test="value!=null">
+   			value = #{value}
+   		</if>
+   		<if test="sevenDate!=null and sevenDate!=''">
+   			sevenDate=#{sevenDate}
+   		</if>
+   		<if test="beginDate!=null and beginDate!=''">
+   			beginDate=#{beginDate}
+   		</if>
+  	 </update>  
+  	 
+</mapper>

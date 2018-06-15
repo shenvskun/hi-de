@@ -1,13 +1,18 @@
 package sk.base.collection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class Learn_Collection {
 	public static void main(String[] args) {
@@ -99,15 +104,63 @@ public class Learn_Collection {
 		li.next();
 		System.out.println(testListIterator);
 		
+		System.out.println("========treeSet============");
+		Set s = new TreeSet(new PComparator());
+		s.add(new Person("p1", 3));
+		s.add(new Person("p2", 35));
+		s.add(new Person("p4", 32));
+		s.add(new Person("p3", 12));
+		s.add(new Person("p5", 1));
+		System.out.println(s);
+		
+		System.out.println("=============map==============");
+		Map m = new HashMap();
+		m.put("a", 111);
+		m.put("b", 222);
+		m.put("c", 333);
+		m.put("d", 444);
+		Set<Map.Entry> entrySet = m.entrySet();
+		for (Map.Entry e : entrySet) {
+			System.out.println(e.getKey() + "   =   " + e.getValue());
+		}
+		
+		System.out.println("===========================Collections================");
+		Collections.sort(testListIterator);
+		System.out.println(testListIterator);
+		int binarySearch = Collections.binarySearch(testListIterator, "第三本书");
+		System.out.println("=========binarySearch===========");
+		System.out.println(binarySearch);
+		
+		System.out.println("===============反序list");
+		Collections.reverse(testListIterator);
+		System.out.println(testListIterator);
+		
+		System.out.println("===========swap对调位置");
+		Collections.swap(testListIterator, 0, 3);
+		System.out.println(testListIterator);
+		
+		System.out.println("==========replaceAll替换元素");
+		Collections.replaceAll(testListIterator, "dddd", "mmmm");
+		System.out.println(testListIterator);
+		
+		Object[] array = testListIterator.toArray();
+		for (Object object : array) {
+			System.out.println(object.toString());
+		}
+		
+		System.out.println("=======================Arrays");
+		System.out.println("==========二分");
+		int[] ii = {4,3,6,9,2};
+		Arrays.sort(ii);
+		System.out.println(Arrays.binarySearch(ii, 9));
 	}
 }
 
-class Person {
+class Person implements Comparable<Person> {
 	private String name;
 	private Integer age;
 	
-	public Person() {
-	}
+	public Person() {}
 	
 	@Override
 	public String toString() {
@@ -160,6 +213,30 @@ class Person {
 	}
 	public void setAge(Integer age) {
 		this.age = age;
+	}
+
+	@Override
+	public int compareTo(Person o) {
+		if(this.age > o.getAge()) {
+			return 1;
+		} else if (this.age < o.getAge()) {
+			return -1;
+		}
+		return 0;
+	}
+	
+}
+class PComparator implements Comparator<Person> {
+
+	@Override
+	public int compare(Person o1, Person o2) {
+		if(o1.getAge() > o2.getAge()) {
+			return 1;
+		} 
+		if(o1.getAge() < o2.getAge()) {
+			return -1;
+		}
+		return 0;
 	}
 	
 }

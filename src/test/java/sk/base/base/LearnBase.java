@@ -1,11 +1,25 @@
 package sk.base.base;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
 import sk.base.learn_abstract.IProvinceGovernMent;
 import sk.base.learn_enum.Animal;
 import sk.base.learn_enum.OrderStatus;
 
 public class LearnBase {
-	public static void main(String[] args) {
+	
+	public static void print(Collection<? extends Object> c) {
+		for (Object object : c) {
+			System.out.println(object);
+		}
+	}
+	
+	public static void main(String[] args) throws Exception {
 		System.out.println("=====char");
 		char y = 65;
 		System.out.println(++y);
@@ -48,11 +62,32 @@ public class LearnBase {
 		
 		//修饰符 abstract
 		new IProvinceGovernMent(){
-
+			private String name;
 			@Override
 			public void shoushui() {
 				
 			}};
+			
+		new C().getS();
+		
+		
+		
+		List<String> arr = new ArrayList<String>();
+		arr.add("addd");
+		print(arr);
+		
+		Date d = new SimpleDateFormat("yyyyMMdd").parse("20180606");
+		Calendar cn = Calendar.getInstance();
+		Date d2 = cn.getTime();
+		System.out.println(d.compareTo(d2));
+		
+		cn.add(Calendar.DATE, 1);
+		System.out.println(cn.getTime());
+		System.out.println(d2.compareTo(new Date()));
+		
+		System.out.println("=====匿名内部类=======");
+		new Outer().print();
+		
 	}
 }
 
@@ -62,6 +97,44 @@ enum Season{
 class JubuBianliang{
 	public void say() {
 		final String s = "s";
+	}
+}
+
+class P {
+	private String s = "sss";
+
+	public String getS() {
+		return s;
+	}
+
+	public void setS(String s) {
+		this.s = s;
+	}
+	
+}
+class C extends P {
+	public void s() {
+		
+	}
+}
+interface Actor{
+	Actor show1();
+	Actor show2();
+}
+class Outer{
+	Actor i = new Actor() {
+		public Actor show1() {
+			System.out.println("show1");
+			return this;
+		}
+		public Actor show2() {
+			System.out.println("show2");
+			return this;
+		}
+	}; 
+	
+	public void print() {
+		i.show1().show2();
 	}
 }
 
