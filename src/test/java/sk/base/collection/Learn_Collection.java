@@ -153,6 +153,9 @@ public class Learn_Collection {
 		int[] ii = {4,3,6,9,2};
 		Arrays.sort(ii);
 		System.out.println(Arrays.binarySearch(ii, 9));
+		
+		System.out.println("可以和流相关联的集合对象  Properties");
+		
 	}
 }
 
