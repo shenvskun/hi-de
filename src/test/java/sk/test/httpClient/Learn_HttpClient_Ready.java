@@ -1,4 +1,4 @@
-package sk.test;
+package sk.test.httpClient;
 
 import java.io.IOException;
 import java.security.cert.CertificateException;

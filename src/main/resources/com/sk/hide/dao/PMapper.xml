@@ -10,16 +10,19 @@
    		insert into p(uid,value,type,sevenDate,beginDate) values(#{uid}, #{value}, #{type},#{sevenDate},#{beginDate})  
   	 </insert>  
   	 <update id="update" parameterType="com.sk.hide.entity.P">  
-   		update p set 
+   		update p set uid=#{uid}
    		<if test="value!=null">
-   			value = #{value}
+   			,value = #{value}
    		</if>
    		<if test="sevenDate!=null and sevenDate!=''">
-   			sevenDate=#{sevenDate}
+   			,sevenDate=#{sevenDate}
    		</if>
    		<if test="beginDate!=null and beginDate!=''">
-   			beginDate=#{beginDate}
+   			,beginDate=#{beginDate}
    		</if>
+   		where uid=#{uid}
   	 </update>  
-  	 
+  	  <select id="findCYC30List" resultType="com.sk.hide.entity.P">  
+   		select * from p where beginDate=DATE_FORMAT(DATE_SUB(NOW(),INTERVAL '29' DAY), '%Y%m%d') 
+  	 </select>  
 </mapper>

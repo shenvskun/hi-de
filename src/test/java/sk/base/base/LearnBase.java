@@ -88,6 +88,9 @@ public class LearnBase {
 		System.out.println("=====匿名内部类=======");
 		new Outer().print();
 		
+		System.out.println("cpu的核心个数为");
+		System.out.println(Runtime.getRuntime().availableProcessors());
+		
 	}
 }
 

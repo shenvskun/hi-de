@@ -1,4 +1,4 @@
-package sk.test;
+package sk.test.httpClient;
 
 import java.util.HashMap;
 import java.util.Map;

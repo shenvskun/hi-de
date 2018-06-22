@@ -2,6 +2,7 @@ package com.sk.hide.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.resource.VersionResourceResolver;
 @Configuration
 @ComponentScan(basePackages={"com.sk.hide"})
 @EnableWebMvc
+@EnableScheduling
 public class MyWebConfig implements WebMvcConfigurer{
 
 	

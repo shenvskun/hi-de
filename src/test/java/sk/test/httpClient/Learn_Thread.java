@@ -1,4 +1,4 @@
-package sk.test;
+package sk.test.httpClient;
 
 import org.apache.http.client.protocol.HttpClientContext;
 

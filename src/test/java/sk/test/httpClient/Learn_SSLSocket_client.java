@@ -1,4 +1,4 @@
-package sk.test;
+package sk.test.httpClient;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

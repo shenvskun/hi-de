@@ -68,7 +68,7 @@ public class PPController {
 				pm.update(p2);
 			}else {
 				//7
-				//sevenDate标志为空 则周期未满7
+				//从sevenDate起查流水
 				Pjnl pj2 = new Pjnl();
 				pj2.setUid(pj.getUid());
 				pj2.setAddType("05");
@@ -84,7 +84,7 @@ public class PPController {
 				c2.add(Calendar.DATE, -7);
 				String seventh = new SimpleDateFormat("yyyyMMdd").format(c2.getTime());
 				//有7条连续的记录
-				if(pjList.size() == 7 && seventh.equals(pjList.get(6).getTransDate())) {
+				if(pjList.size() >= 7 && seventh.equals(pjList.get(6).getTransDate())) {
 					
 					p2.setValue(p2.getValue()+5); 
 					p2.setSevenDate(newBeginDate);
@@ -92,7 +92,7 @@ public class PPController {
 				//不为空
 				//30
 				//定时任务把30周期往后推
-				//value+20外 sevenDate 置空 beginDate更新
+				//value+20外 sevenDate beginDate更新
 				pj2.setTransDate(p2.getBeginDate());
 				List<Pjnl> pjl2 = pjm.findList(pj2);
 				if(pjl2.size() == 30) {
