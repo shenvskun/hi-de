@@ -8,34 +8,37 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Properties;
 
 public class Learn_IO {
 	public static void main(String[] args) throws Exception {
-		System.out.println("====file方法 renameTo====");
-		File file = new File("d:/aaa.txt");
-		File file2 = new File("e:/aat.txt");
-		
-		System.out.println(file.createNewFile());
-		file.setWritable(true);
-		FileWriter fw = new FileWriter(file);
-		fw.write("dddssadfaadfad");
-		fw.flush();
-		fw.close();
-		System.out.println(file.renameTo(file2));
-		
-		System.out.println("========字节流读取方式2");
-		FileInputStream fi = new FileInputStream(file2);
-		byte[] b = new byte[1024];
+//		System.out.println("====file方法 renameTo====");
+//		File file = new File("d:/aaa.txt");
+//		File file2 = new File("d:/aat.txt");
+//		
+//		System.out.println(file.createNewFile());
+//		file.setWritable(true);
+//		FileWriter fw = new FileWriter(file);
+//		fw.write("dddssadfaadfad");
+//		fw.close();
+//		System.out.println(file.renameTo(file2));
+//		
+//		System.out.println("========字节流读取方式2");
+//		FileInputStream fi = new FileInputStream(file2);
+//		byte[] b = new byte[1024];
 
-		System.out.println("=========fileoutputstream");
-		FileOutputStream fo = new FileOutputStream("d:/a.tx",true);
-		fo.write('0');
-		fo.write('0');
-		fo.write('0');
-		fo.write('0');
-		fo.close();
+//		System.out.println("=========fileoutputstream");
+//		FileOutputStream fo = new FileOutputStream("d:/a.tx",true);
+//		fo.write('0');
+//		fo.write('0');
+//		fo.write('0');
+//		fo.write('0');
+//		fo.close();
 		
 //		long start1 = System.currentTimeMillis();
 //		FileInputStream fi1 = new FileInputStream("d:/33.rmvb");
@@ -86,10 +89,32 @@ public class Learn_IO {
 		
 		System.out.println("字符流写");
 		FileWriter fw2 = new FileWriter("d:/opop.txt", true);
+		System.out.println("默认编码格式为" + fw2.getEncoding());
 		fw2.write("月色烙印在城墙，风声呼啸过苍茫");
-		Thread.sleep(4000);
+//		Thread.sleep(4000);
 		fw2.close();
 		
+		System.out.println("列出jvm的所有属性");
+		Properties prop = System.getProperties();
+		prop.list(System.out);
+		
+		Properties prop1 = new Properties();
+		prop1.setProperty("dd", "乱不乱码");
+		prop1.store(new OutputStreamWriter(new FileOutputStream("d:/prop1.properties"), "UTF-8"), new String("注释啊".getBytes("utf-8"), "iso8859-1"));
+		
+//		System.out.println("重定向syso");
+//		System.setOut(new PrintStream("d:/console.txt"));
+//		System.out.println("都开始");
+		
+		System.out.printf("%s和%8s大大大", "得到", "婆婆");
+		
+		System.out.println("==========用指定码表打印字符串=========");
+		
+		PrintStream printStream = new PrintStream("d:/e.txt", "iso8859-1");
+		printStream.println("d的身份");
+		
+		System.out.println("打印字符流");
+//		PrintWriter pw = new PrintWriter("", "");
 	}
 	
 	
