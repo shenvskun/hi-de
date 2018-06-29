@@ -27,10 +27,12 @@ public class Learn_Socket {
 		System.out.println(ljaddr.getHostAddress());
 		System.out.println(ljaddr.getHostName());
 	}
-	//Url
+	//Url  
+	//url终极划分 [scheme:][//host:port][path][?query][#fragment]   其中authority=host:port
 	static void testUrl() throws Exception {
 		System.out.println("==============url====");
 		URL url = new URL("https://baike.baidu.com/item/IP/224599#aa?fr=aladdin");
+		System.out.println("===authority=host+port: ===" +  url.getAuthority());
 		System.out.println("======默认端口=====" + url.getDefaultPort());
 		System.out.println("======协议=====" + url.getProtocol());
 		System.out.println("======主机名=====" + url.getHost());

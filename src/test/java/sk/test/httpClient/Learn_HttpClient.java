@@ -17,6 +17,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -46,12 +47,16 @@ import org.apache.http.util.EntityUtils;
 public class Learn_HttpClient {
 	public static void main(String[] args) {
 //		poolConnectionManager();
+//		poolConnectionManager2();
 //		System.out.println(HttpClientContext.HTTP_TARGET_HOST);
 		
 //		socket();
 		
 //		sslSocketFactory();
-		sslWithoutValidation();
+//		sslWithoutValidation();
+		
+		//字符集常量
+		System.out.println(Consts.UTF_8);
 	}
 	//★概念
 	//路由：需要连接的主机的个数
@@ -73,7 +78,7 @@ public class Learn_HttpClient {
 		HttpHost host = new HttpHost("localhost", 9090);
 //		cm.setMaxPerRoute(new HttpRoute(host), 50); //为特定主机设置最大连接数
 
-		RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(5000).setConnectTimeout(5000).setSocketTimeout(3000).build();
+		RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(8500).setConnectTimeout(5000).setSocketTimeout(3000).build();
 
 		CloseableHttpClient httpclient = HttpClients.custom().setConnectionManager(cm).setDefaultRequestConfig(requestConfig).build();
 		
@@ -86,6 +91,31 @@ public class Learn_HttpClient {
 			postThread.start();
 		}
 		for (PostThread postThread : pts) {
+			try {
+				postThread.join();
+			} catch (InterruptedException e) {
+				System.out.println("join出错");
+			}
+		}
+	}
+	public static void poolConnectionManager2() {
+		PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+		cm.setMaxTotal(20);
+		cm.setDefaultMaxPerRoute(cm.getMaxTotal()); //=最大连接数/主机数量 是真正起作用的设置
+		HttpHost host = new HttpHost("localhost", 9090);
+//		cm.setMaxPerRoute(new HttpRoute(host), 50); //为特定主机设置最大连接数
+		
+		RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(5000).setConnectTimeout(5000).setSocketTimeout(3000).build();
+		
+		String url = "http://localhost:9090/hi-de/server";
+		
+		PostThread2[] pts = new PostThread2[100];
+		for(int i = 1; i <=100 ; i ++) {
+			PostThread2 postThread = new PostThread2(cm, requestConfig, url);
+			pts[i-1] = postThread;
+			postThread.start();
+		}
+		for (PostThread2 postThread : pts) {
 			try {
 				postThread.join();
 			} catch (InterruptedException e) {
@@ -271,6 +301,48 @@ class PostThread extends Thread {
 	
 	@Override
 	public void run() {
+		HttpPost post = new HttpPost(url);
+		HttpResponse response = null;
+		try {
+			response = hc.execute(post);
+		} catch (Exception e) {
+			System.out.println("cuo");
+		}
+		if(response == null) {
+			return;
+		}
+		HttpEntity entity = response.getEntity();
+		if(entity != null) {
+			try {
+				String returnStr = EntityUtils.toString(entity);
+				System.out.println("=============" + returnStr);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			try {
+				EntityUtils.consume(entity);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+}
+class PostThread2 extends Thread {
+	private PoolingHttpClientConnectionManager pcm;
+	private RequestConfig rc;
+	private String url;
+	
+	public PostThread2(PoolingHttpClientConnectionManager pcm, RequestConfig rc, String url) {
+		this.pcm = pcm;
+		this.rc = rc;
+		this.url = url;
+	}
+	
+	@Override
+	public void run() {
+		CloseableHttpClient hc = HttpClients.custom().setConnectionManager(pcm).setDefaultRequestConfig(rc).build();
 		HttpPost post = new HttpPost(url);
 		HttpResponse response = null;
 		try {
