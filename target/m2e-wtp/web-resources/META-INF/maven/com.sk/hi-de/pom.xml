@@ -4,8 +4,9 @@
   <artifactId>hi-de</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
+ <!-- s -->
   <dependencies>
-  <!--  dsdaadaa-->
+ 
 		<dependency>
 		    <groupId>dom4j</groupId>
 		    <artifactId>dom4j</artifactId>
