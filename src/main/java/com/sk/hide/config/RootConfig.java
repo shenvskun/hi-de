@@ -19,6 +19,8 @@ import org.springframework.orm.ibatis.SqlMapClientFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import sk.com.util.MyInjectLogic;
+
 import com.alibaba.druid.pool.DruidDataSource;
 import com.ibatis.sqlmap.client.SqlMapClient;
 
@@ -26,8 +28,8 @@ import com.ibatis.sqlmap.client.SqlMapClient;
  * 1 @Configuration注解在这里可以省略 RootConfig直接配置给了getRootConfigClasses方法
  * 2 如果使用applicationContext.xml中的<context:component-scan base-package="com.lianjinsoft" /> 寻找配置类 则需要@Configuration注解单纯的@Component不行 因为@Bean必须和@Configuration配合
  */
-@Configuration
-@EnableTransactionManagement //开启事务管理 NO.1
+//@Configuration
+@EnableTransactionManagement //开启事务管理 NO.1 <tx:annotation-driven transaction-manager=""/>
 @PropertySource("classpath:/resource/mydatasource.properties")
 @ComponentScan(basePackages={"sk.com.util"})
 @MapperScan(basePackages = {"com.sk.hide.dao"})
@@ -137,11 +139,12 @@ public class RootConfig {
 		}  
 //		datasource.setConnectionProperties(connectionProperties);  
 		
-		try {
-			datasource.init();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			datasource.init();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+		logger.info("datasource init----------------------");
 		return datasource;  
 	}  
 	
@@ -167,10 +170,11 @@ public class RootConfig {
 	
 	@Bean
 	public SqlSessionFactoryBean sqlSessionFactoryBean() {
-		String resource = "classpath:/mybatis/sqlMapConfig.xml";
+//		String resource = "classpath:/mybatis/sqlMapConfig.xml";
 		SqlSessionFactoryBean ssfb = new SqlSessionFactoryBean();
 		ssfb.setDataSource(dataSource());
-		ssfb.setConfigLocation(new ClassPathResource("/mybatis/sqlMapConfig.xml"));
+//		ssfb.setConfigLocation(new ClassPathResource("/mybatis/sqlMapConfig.xml")); //可以不需要配置文件  别名 有setTypeAlias方法解决
+//		ssfb.setMapperLocations(mapperLocations); mapperLocations是resource数组 传递mapper.xml的位置
 		return ssfb;
 	}
 	
@@ -195,11 +199,8 @@ public class RootConfig {
 //		return mc;
 //	}
 	
+	
 }
-
-
-
-
 
 
 

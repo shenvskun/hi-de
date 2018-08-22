@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
-
+<!-- 没有什么原理只是记住规则 -->
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 	<appender name="console" class="org.apache.log4j.ConsoleAppender">
 		<param name="Target" value="System.out" />
@@ -30,6 +30,10 @@
 	</logger>
 	<logger name="org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor" additivity="true">
 		<level value="debug" />
+	</logger>
+	<!-- 提升定时任务框架的日志级别为info  找不到在spring中注册的ScheduledExecutorService时报debug级别的错误 logger.debug("Could not find default TaskScheduler bean", ex); -->
+	<logger name="org.springframework.scheduling">
+	    <level value="info" />
 	</logger>
 	<root>
 		<priority value="info" />

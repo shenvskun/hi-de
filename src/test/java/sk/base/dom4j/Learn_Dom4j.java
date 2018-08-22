@@ -9,7 +9,8 @@ import org.dom4j.Node;
 
 public class Learn_Dom4j {
 	public static void main(String[] args) throws Exception {
-		root();
+//		root();
+		plainTextElement();
 	}
 	
 	static void root() throws Exception {
@@ -35,5 +36,16 @@ public class Learn_Dom4j {
 		Node shelfNode = root.selectSingleNode("book1");
 		System.out.println(shelfNode.getName());
 		System.out.println(shelfNode.getText());
+	}
+	
+	//字符串是不是子节点elements是否为空
+	//反true 表明纯文本不是element
+	static void plainTextElement() throws Exception{
+		String xml = "<root>哈哈哈是</root>";
+		Document doc = DocumentHelper.parseText(xml);
+		
+		Element re = doc.getRootElement();
+		List es = re.elements();
+		System.out.println(es.isEmpty());
 	}
 }

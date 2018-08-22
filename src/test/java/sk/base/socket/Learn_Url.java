@@ -18,14 +18,15 @@ public class Learn_Url {
 		
 		trans();
 		
-		testUrl();
+//		testUrl();
 	}
 	
 	static void trans() throws Exception {
 		CloseableHttpClient hc = HttpClients.createDefault();
-		String haha = "代开收费了/?:#";
+		String haha = "代开=收" + URLEncoder.encode("&") + "费 了/?:";
 //		haha = URLEncoder.encode(haha); 
-		String url = "http://localhost:9090/hi-de/gg?name="+haha+"";
+		haha += URLEncoder.encode("#"); 
+		String url = "http://localhost:9091/hi-de/gg?name="+haha+"";
 		HttpGet get = new HttpGet(url);
 		CloseableHttpResponse res = hc.execute(get);
 		HttpEntity entity = res.getEntity();
@@ -68,6 +69,12 @@ public class Learn_Url {
 		 * 2 放到data中
 		 * https://blog.csdn.net/rainbow702/article/details/52962905
 		 */
+		
+		//结论 URL中会引起歧义的字符在引起歧义的时候一定要编码
+		//空格 百分号 强制要编码
+		//中文可以不编码
+		//终极策略  参数的键值对统一编码就没问题了
+		//页面中用js编码要使用 UrlEncode
 	}
 	
 	//url类

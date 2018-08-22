@@ -1,15 +1,6 @@
 package sk.test.httpClient;
 
 
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import org.springframework.cglib.beans.BeanMap;
-
-import com.google.gson.Gson;
-import com.sk.hide.entity.Book;
-import com.sk.hide.util.DataUtil;
 
 public class TestTest {
 
