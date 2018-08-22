@@ -4,13 +4,9 @@
   <artifactId>hi-de</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
-<<<<<<< HEAD
+
   <dependencies>
-  <!--  dsdaadaa-->
-=======
-  <dependencies>
-  <!--  dsdaadllll-->
->>>>>>> branch 'master' of https://github.com/shenvskun/hi-de.git
+ 
 		<dependency>
 		    <groupId>dom4j</groupId>
 		    <artifactId>dom4j</artifactId>
